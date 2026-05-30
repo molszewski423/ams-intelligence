@@ -9,36 +9,27 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 ```mermaid
 graph TB
     subgraph Sources[Surveillance Sources]
-        NHSN[CDC NHSN
-HAI / Antibiotic Use]
-        FAERS[FDA FAERS
-Adverse Events]
-        WHONET[WHONET
-Global AMR Data]
-        PUBMED[PubMed
-Literature]
-        ATLAS[Pfizer ATLAS
-Global Surveillance]
+        NHSN[CDC NHSN]
+        FAERS[FDA FAERS]
+        WHONET[WHONET Global AMR]
+        PUBMED[PubMed Literature]
+        ATLAS[Pfizer ATLAS]
     end
 
     subgraph Vault[Knowledge Base]
-        VAULTMD[Obsidian Vault
-Guidelines / Formulary]
+        VAULTMD[Obsidian Vault Guidelines]
         Chunker[Markdown Chunker]
-        Embed[nomic-embed-text]
-        ChromaDB[ChromaDB]
+        Embed[nomic-embed-text Embeddings]
+        ChromaDB[ChromaDB Vector Store]
     end
 
     subgraph Analysis[Analysis Modules]
-        RES[Resistance Analyzer
-AMR Trend Detection]
-        UTIL[Utilization Detector
-PRR / ROR / Evans criteria]
+        RES[Resistance Analyzer]
+        UTIL[Utilization Detector PRR ROR]
     end
 
     subgraph LLM[LLM Layer via Ollama]
-        OLLAMA[LangChain + ChatOllama
-Signal Interpretation]
+        OLLAMA[LangChain ChatOllama]
     end
 
     subgraph Output[Outputs]
