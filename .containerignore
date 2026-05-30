@@ -1,0 +1,15 @@
+.venv/
+chroma_db/
+output/
+data/nhsn/
+data/whonet/
+data/atlas/
+.streamlit/secrets.toml
+tests/
+**/__pycache__/
+*.pyc
+*.log
+*.egg-info/
+.env
+.git/
+.gitignore
