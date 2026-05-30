@@ -2,7 +2,7 @@
 
 Clinical AI platform for antimicrobial stewardship programs. Aggregates surveillance data from five public health databases, detects resistance trends and adverse drug event signals, and generates PDF reports for clinical teams.
 
-Built for pharmacists, ID physicians, and infection control teams who need signal detection across heterogeneous data sources without building a data pipeline from scratch.
+Built by a pharmacist who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation — for pharmacists, ID physicians, and infection control teams who need signal detection across heterogeneous data sources without building a data pipeline from scratch.
 
 ---
 
