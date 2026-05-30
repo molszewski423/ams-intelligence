@@ -8,61 +8,43 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 
 ```mermaid
 graph TB
-    subgraph Sources["Surveillance Data Sources"]
-        NHSN["CDC NHSN
-HAI / Device Utilization
-Antibiotic Use Rates"]
-        FAERS["FDA FAERS
-Adverse Event Reports
-PRR / ROR Signal Detection"]
-        WHONET["WHONET
-Global AMR Lab Data
-Organism Resistance Rates"]
-        PUBMED["PubMed / Entrez
-Literature Monitoring"]
-        ATLAS["Pfizer ATLAS
-Global Surveillance
-70+ Countries"]
+    subgraph Sources[Surveillance Sources]
+        NHSN[CDC NHSN
+HAI / Antibiotic Use]
+        FAERS[FDA FAERS
+Adverse Events]
+        WHONET[WHONET
+Global AMR Data]
+        PUBMED[PubMed
+Literature]
+        ATLAS[Pfizer ATLAS
+Global Surveillance]
     end
 
-    subgraph Vault["Knowledge Base"]
-        VAULTMD["Obsidian Vault
-Clinical Guidelines
-Formulary / Policies"]
-        Chunker["Header-Aware Chunker"]
-        Embed["nomic-embed-text
-Ollama Embeddings"]
-        ChromaDB["ChromaDB
-Vector Store"]
+    subgraph Vault[Knowledge Base]
+        VAULTMD[Obsidian Vault
+Guidelines / Formulary]
+        Chunker[Markdown Chunker]
+        Embed[nomic-embed-text]
+        ChromaDB[ChromaDB]
     end
 
-    subgraph Analysis["Analysis Modules"]
-        RES["Resistance Analyzer
-Trend detection
-across organisms + drug classes"]
-        UTIL["Utilization Detector
-PRR / ROR / Chi2
-Evans criteria signal detection"]
-        DISP["Disproportionality
-Continuity correction
-Artifact exclusion"]
+    subgraph Analysis[Analysis Modules]
+        RES[Resistance Analyzer
+AMR Trend Detection]
+        UTIL[Utilization Detector
+PRR / ROR / Evans criteria]
     end
 
-    subgraph LLM["LLM Layer - Ollama"]
-        OLLAMA["LangChain + ChatOllama
-Signal interpretation
-Clinical context / Confounding"]
+    subgraph LLM[LLM Layer via Ollama]
+        OLLAMA[LangChain + ChatOllama
+Signal Interpretation]
     end
 
-    subgraph Output["Outputs"]
-        DASH["Streamlit Dashboard
-Resistance Trends / Utilization Signals"]
-        PDF["PDF Reports
-Resistance trend exports"]
-        SLIDE["LinkedIn Slideshow
-Stewardship highlights"]
-        GW["Gateway Portal
-Authenticated access"]
+    subgraph Output[Outputs]
+        DASH[Streamlit Dashboard]
+        PDF[PDF Reports]
+        GW[Gateway Portal]
     end
 
     NHSN --> RES
@@ -74,16 +56,15 @@ Authenticated access"]
     VAULTMD --> Chunker --> Embed --> ChromaDB
     ChromaDB --> OLLAMA
     RES --> DASH
-    UTIL --> DISP --> DASH
+    UTIL --> DASH
     OLLAMA --> DASH
     DASH --> PDF
-    DASH --> SLIDE
     GW --> DASH
 
-    subgraph HW["Hardware"]
-        GPU["RTX 5060 Ti 16GB VRAM"]
+    subgraph HW[Hardware]
+        GPU[RTX 5060 Ti 16GB]
     end
-    LLM -.->|runs on| GPU
+    LLM -.-> GPU
 ```
 
 **Design principle:** Confounding by indication is explicitly modeled — last-resort antibiotics treat critically ill patients. Statistical signals are always interpreted in clinical context, not in isolation.
