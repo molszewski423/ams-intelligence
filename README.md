@@ -6,57 +6,7 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 
 ---
 
-```mermaid
-graph TB
-    subgraph Sources[Surveillance Sources]
-        NHSN[CDC NHSN]
-        FAERS[FDA FAERS]
-        WHONET[WHONET Global AMR]
-        PUBMED[PubMed Literature]
-        ATLAS[Pfizer ATLAS]
-    end
-
-    subgraph Vault[Knowledge Base]
-        VAULTMD[Obsidian Vault Guidelines]
-        Chunker[Markdown Chunker]
-        Embed[nomic-embed-text Embeddings]
-        ChromaDB[ChromaDB Vector Store]
-    end
-
-    subgraph Analysis[Analysis Modules]
-        RES[Resistance Analyzer]
-        UTIL[Utilization Detector PRR ROR]
-    end
-
-    subgraph LLM[LLM Layer via Ollama]
-        OLLAMA[LangChain ChatOllama]
-    end
-
-    subgraph Output[Outputs]
-        DASH[Streamlit Dashboard]
-        PDF[PDF Reports]
-        GW[Gateway Portal]
-    end
-
-    NHSN --> RES
-    WHONET --> RES
-    ATLAS --> RES
-    FAERS --> UTIL
-    NHSN --> UTIL
-    PUBMED --> ChromaDB
-    VAULTMD --> Chunker --> Embed --> ChromaDB
-    ChromaDB --> OLLAMA
-    RES --> DASH
-    UTIL --> DASH
-    OLLAMA --> DASH
-    DASH --> PDF
-    GW --> DASH
-
-    subgraph HW[Hardware]
-        GPU[RTX 5060 Ti 16GB]
-    end
-    LLM -.-> GPU
-```
+![Architecture](docs/architecture.png)
 
 **Design principle:** Confounding by indication is explicitly modeled — last-resort antibiotics treat critically ill patients. Statistical signals are always interpreted in clinical context, not in isolation.
 
