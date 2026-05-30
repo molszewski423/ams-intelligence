@@ -6,6 +6,66 @@ Built by a pharmacist who led an organization to IDSA Antimicrobial Stewardship 
 
 ---
 
+
+```mermaid
+graph TB
+    subgraph Sources["📥 Surveillance Data Sources"]
+        NHSN["CDC NHSN\nHAI · Device Utilization\nAntibiotic Use Rates"]
+        FAERS["FDA FAERS\nAdverse Event Reports\nPRR · ROR Signal Detection"]
+        WHONET["WHONET\nGlobal AMR Lab Data\nOrganism Resistance Rates"]
+        PUBMED["PubMed / Entrez\nLiterature Monitoring"]
+        ATLAS["Pfizer ATLAS\nGlobal Surveillance\n70+ Countries"]
+    end
+
+    subgraph Vault["📚 Knowledge Base"]
+        VAULTMD["Obsidian Vault\nClinical Guidelines\nFormulary · Policies"]
+        Chunker["Header-Aware\nMarkdown Chunker"]
+        Embed["nomic-embed-text\nOllama Embeddings"]
+        ChromaDB["ChromaDB\nVector Store"]
+    end
+
+    subgraph Analysis["⚙️ Analysis Modules"]
+        RES["Resistance Analyzer\nTrend detection\nacross organisms + drug classes"]
+        UTIL["Utilization Detector\nPRR · ROR · Chi²\nEvans criteria signal detection"]
+        DISP["Disproportionality\nContinuity correction\nArtifact exclusion"]
+    end
+
+    subgraph LLM["🤖 LLM Layer — Ollama"]
+        OLLAMA["LangChain + ChatOllama\nSignal interpretation\nClinical context · Confounding analysis"]
+    end
+
+    subgraph Output["📊 Outputs"]
+        DASH["Streamlit Dashboard\nResistance Trends · Utilization Signals\nVault Browser"]
+        PDF["PDF Reports\nResistance trend exports\nClinical summaries"]
+        SLIDE["LinkedIn Slideshow\nStewardship highlights"]
+        GW["Gateway Portal\nAuthenticated access\nRole-based for clinical teams"]
+    end
+
+    NHSN --> RES
+    WHONET --> RES
+    ATLAS --> RES
+    FAERS --> UTIL
+    NHSN --> UTIL
+    PUBMED --> ChromaDB
+    VAULTMD --> Chunker --> Embed --> ChromaDB
+    ChromaDB --> OLLAMA
+    RES --> DASH
+    UTIL --> DISP --> DASH
+    OLLAMA --> DASH
+    DASH --> PDF
+    DASH --> SLIDE
+    GW --> DASH
+
+    subgraph HW["💻 Hardware"]
+        GPU["RTX 5060 Ti · 16GB VRAM"]
+    end
+    LLM -.->|runs on| GPU
+```
+
+**Design principle:** Confounding by indication is explicitly modeled — last-resort antibiotics treat critically ill patients. Statistical signals are interpreted in clinical context, not in isolation.
+
+---
+
 ## Features
 
 **Resistance Trends Dashboard**
