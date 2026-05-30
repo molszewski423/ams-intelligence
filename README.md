@@ -8,36 +8,61 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 
 ```mermaid
 graph TB
-    subgraph Sources["📥 Surveillance Data Sources"]
-        NHSN["CDC NHSN\nHAI · Device Utilization\nAntibiotic Use Rates"]
-        FAERS["FDA FAERS\nAdverse Event Reports\nPRR · ROR Signal Detection"]
-        WHONET["WHONET\nGlobal AMR Lab Data\nOrganism Resistance Rates"]
-        PUBMED["PubMed / Entrez\nLiterature Monitoring"]
-        ATLAS["Pfizer ATLAS\nGlobal Surveillance\n70+ Countries"]
+    subgraph Sources["Surveillance Data Sources"]
+        NHSN["CDC NHSN
+HAI / Device Utilization
+Antibiotic Use Rates"]
+        FAERS["FDA FAERS
+Adverse Event Reports
+PRR / ROR Signal Detection"]
+        WHONET["WHONET
+Global AMR Lab Data
+Organism Resistance Rates"]
+        PUBMED["PubMed / Entrez
+Literature Monitoring"]
+        ATLAS["Pfizer ATLAS
+Global Surveillance
+70+ Countries"]
     end
 
-    subgraph Vault["📚 Knowledge Base"]
-        VAULTMD["Obsidian Vault\nClinical Guidelines\nFormulary · Policies"]
-        Chunker["Header-Aware\nMarkdown Chunker"]
-        Embed["nomic-embed-text\nOllama Embeddings"]
-        ChromaDB["ChromaDB\nVector Store"]
+    subgraph Vault["Knowledge Base"]
+        VAULTMD["Obsidian Vault
+Clinical Guidelines
+Formulary / Policies"]
+        Chunker["Header-Aware Chunker"]
+        Embed["nomic-embed-text
+Ollama Embeddings"]
+        ChromaDB["ChromaDB
+Vector Store"]
     end
 
-    subgraph Analysis["⚙️ Analysis Modules"]
-        RES["Resistance Analyzer\nTrend detection\nacross organisms + drug classes"]
-        UTIL["Utilization Detector\nPRR · ROR · Chi²\nEvans criteria signal detection"]
-        DISP["Disproportionality\nContinuity correction\nArtifact exclusion"]
+    subgraph Analysis["Analysis Modules"]
+        RES["Resistance Analyzer
+Trend detection
+across organisms + drug classes"]
+        UTIL["Utilization Detector
+PRR / ROR / Chi2
+Evans criteria signal detection"]
+        DISP["Disproportionality
+Continuity correction
+Artifact exclusion"]
     end
 
-    subgraph LLM["🤖 LLM Layer — Ollama"]
-        OLLAMA["LangChain + ChatOllama\nSignal interpretation\nClinical context · Confounding analysis"]
+    subgraph LLM["LLM Layer - Ollama"]
+        OLLAMA["LangChain + ChatOllama
+Signal interpretation
+Clinical context / Confounding"]
     end
 
-    subgraph Output["📊 Outputs"]
-        DASH["Streamlit Dashboard\nResistance Trends · Utilization Signals\nVault Browser"]
-        PDF["PDF Reports\nResistance trend exports\nClinical summaries"]
-        SLIDE["LinkedIn Slideshow\nStewardship highlights"]
-        GW["Gateway Portal\nAuthenticated access\nRole-based for clinical teams"]
+    subgraph Output["Outputs"]
+        DASH["Streamlit Dashboard
+Resistance Trends / Utilization Signals"]
+        PDF["PDF Reports
+Resistance trend exports"]
+        SLIDE["LinkedIn Slideshow
+Stewardship highlights"]
+        GW["Gateway Portal
+Authenticated access"]
     end
 
     NHSN --> RES
@@ -55,8 +80,8 @@ graph TB
     DASH --> SLIDE
     GW --> DASH
 
-    subgraph HW["💻 Hardware"]
-        GPU["RTX 5060 Ti · 16GB VRAM"]
+    subgraph HW["Hardware"]
+        GPU["RTX 5060 Ti 16GB VRAM"]
     end
     LLM -.->|runs on| GPU
 ```
