@@ -58,7 +58,7 @@ graph TB
 ```
 
 ```bash
-kubectl apply -f k8s/ams-intelligence.yaml
+kubectl apply -f ~/homelab-infra/k8s/ams-intelligence.yaml
 # Dashboard: http://ams.lan  (add 192.168.4.54 ams.lan to /etc/hosts)
 ```
 
@@ -276,7 +276,7 @@ The platform never makes final clinical or formulary determinations. `is_draft` 
 ### Production (k3s)
 
 ```bash
-kubectl apply -f k8s/ams-intelligence.yaml
+kubectl apply -f ~/homelab-infra/k8s/ams-intelligence.yaml
 # Access: http://ams.lan  (login: username=mike)
 ```
 
