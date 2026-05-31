@@ -57,14 +57,14 @@ kubectl exec -n ai deployment/ams-intelligence -- \
 ### CI/CD
 
 Every push to `master` triggers GitLab CI (`.gitlab-ci.yml`):
-1. `lint` — ruff check
-2. `build` — builds and pushes `registry.gitlab.com/molszewski423/ams-intelligence:latest`
+1. `lint` - ruff check
+2. `build` - builds and pushes `registry.gitlab.com/molszewski423/ams-intelligence:latest`
 
 Rollout: `kubectl rollout restart deployment/ams-intelligence -n ai`
 
 ### Ollama (shared in-cluster)
 
-`OLLAMA_BASE_URL=http://ollama:11434` — served by the Ollama pod on mikepc (RTX 5060 Ti).
+`OLLAMA_BASE_URL=http://ollama:11434` - served by the Ollama pod on mikepc (RTX 5060 Ti).
 Models: `gemma4:26b` (REASON\_MODEL), `qwen3:30b` (CODE\_MODEL), `nomic-embed-text` (EMBED\_MODEL).
 
 ---
@@ -341,7 +341,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 | Component | Detail |
 |---|---|
 | **Cluster** | k3s v1.35; mikepc (control plane) + archbox (worker) |
-| **Namespace** | `ai` — all AI workloads |
+| **Namespace** | `ai` - all AI workloads |
 | **Ingress** | Traefik (k3s built-in); `ams.lan` → ams-intelligence:8502 |
 | **Registry** | `registry.gitlab.com/molszewski423/ams-intelligence:latest` |
 | **GPU** | RTX 5060 Ti 16 GB on mikepc; Ollama pod with RuntimeClass `nvidia` |
