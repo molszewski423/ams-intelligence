@@ -493,6 +493,117 @@ Antibiogram Interpretation:
 - Use antibiogram to guide empiric therapy selection and formulary decisions
 """,
     },
+    {
+        "source": "IDSA 2024 Guidance on the Treatment of Antimicrobial-Resistant Gram-Negative Infections (CID 2024)",
+        "doc_type": "guideline",
+        "text": """
+IDSA 2024 Guidance on the Treatment of Antimicrobial-Resistant Gram-Negative Infections
+Published: Clinical Infectious Diseases, 2024 (major revision of 2023 guidance)
+
+CARBAPENEM-RESISTANT ACINETOBACTER BAUMANNII (CRAB):
+
+Preferred Treatment (updated 2024):
+- Sulbactam-durlobactam (Xacduro) + imipenem-cilastatin or meropenem
+  * FDA approved May 2023; first dedicated CRAB-specific therapy
+  * Dosing: sulbactam-durlobactam 1g/0.5g IV q6h (3-hr infusion) + carbapenem
+  * Superior to colistin in ATTACK trial (28-day mortality 19% vs 32%)
+  * Active against OXA-23, OXA-24/40, OXA-58 carbapenemases
+
+Alternative Treatment (downgraded from preferred in 2024):
+- High-dose ampicillin-sulbactam 27g/day (18g ampicillin + 9g sulbactam as continuous/extended infusion)
+  * Use only if sulbactam-durlobactam unavailable
+  * Combine with at least one other active agent (polymyxin, minocycline)
+
+Other:
+- Cefiderocol: reserve for XDR/PDR; broad Acinetobacter activity
+- Tigecycline: removed from CRAB combination guidance in 2024 update
+
+CARBAPENEM-RESISTANT ENTEROBACTERIACEAE (CRE):
+
+KPC-producing (preferred):
+- Ceftazidime-avibactam 2.5g IV q8h (3-hr infusion)
+- Meropenem-vaborbactam 4g IV q8h (3-hr infusion)
+- Imipenem-cilastatin-relebactam 1.25g IV q6h
+
+NDM/MBL-producing (preferred):
+- Ceftazidime-avibactam + aztreonam (concurrent IV; aztreonam not hydrolyzed by MBLs)
+- Cefiderocol monotherapy (salvage for pan-drug resistant)
+
+OXA-48-producing:
+- Ceftazidime-avibactam preferred
+- Cefiderocol alternative
+
+PSEUDOMONAS AERUGINOSA (MDR/XDR):
+- Ceftolozane-tazobactam 3g IV q8h (preferred for MDR without carbapenem resistance)
+- Ceftazidime-avibactam (KPC or AmpC-mediated resistance)
+- Imipenem-cilastatin-relebactam (restored susceptibility in some MDR strains)
+- Cefiderocol (XDR/PDR, DTR Pseudomonas)
+- Combination therapy not routinely recommended unless XDR
+
+STENOTROPHOMONAS MALTOPHILIA (new 2024 guidance):
+- TMP-SMX: preferred for susceptible isolates (15 mg/kg/day TMP component IV/PO divided q6-8h)
+- Ceftazidime-avibactam + aztreonam: active against most isolates; CLSI broth disk elution method endorsed
+- Do NOT test or use ceftazidime monotherapy (2024 guidance explicitly discourages)
+- Tigecycline removed from combination recommendations
+- Minocycline or levofloxacin: alternatives for susceptible isolates
+
+KEY 2024 CHANGES:
+1. Sulbactam-durlobactam replaces high-dose amp-sulbactam as preferred CRAB agent
+2. Tigecycline removed from CRAB and S. maltophilia combination guidance
+3. Ceftazidime monotherapy testing for S. maltophilia discouraged
+4. CZA+ATM remains standard of care for NDM-producing CRE
+5. Cefiderocol clarified as salvage agent for XDR/PDR organisms
+""",
+    },
+    {
+        "source": "CDI Treatment 2025 Update — Bezlotoxumab Discontinuation, Rebyota and Vowst (IDSA/SHEA 2021 base + 2025 formulary updates)",
+        "doc_type": "guideline",
+        "text": """
+Clostridioides difficile Infection (CDI) — 2025 Treatment Updates
+Base: IDSA/SHEA 2021 guidelines with 2024-2025 agent changes
+
+CURRENT TREATMENT ALGORITHM:
+
+Initial Episode:
+- Preferred: Fidaxomicin 200 mg PO q12h x 10 days
+- Alternative: Vancomycin 125 mg PO q6h x 10 days
+- Metronidazole: NOT for primary CDI treatment (inferior to vancomycin/fidaxomicin); adjunct IV only in fulminant disease
+
+Severe CDI (WBC >15k or Cr >1.5):
+- Vancomycin 125 mg PO q6h x 10 days
+
+Fulminant CDI (ileus, megacolon, hypotension):
+- Vancomycin 500 mg PO/NGT q6h + rectal instillation if ileus
+- Metronidazole 500 mg IV q8h (adjunct; reaches colon via IV when PO absorption impaired)
+- Urgent surgical consultation
+
+RECURRENT CDI:
+
+First Recurrence:
+- Fidaxomicin preferred over vancomycin (EXTEND trial; lower further recurrence)
+- Vancomycin tapered/pulsed if fidaxomicin unavailable:
+  125 mg QID x 10d → BID x 7d → QD x 7d → q2-3 days x 2-8 weeks
+
+Second or Subsequent Recurrence — Microbiota Restoration:
+1. Rebyota (fecal microbiota, live-jslm): FDA approved Nov 2022
+   * Single-dose rectal administration (150 mL), 24-72h after last antibiotic
+   * >70% prevention of further recurrence at 8 weeks
+2. Vowst (fecal microbiota spores live-brpk): FDA approved April 2023
+   * 3 capsules PO daily x 3 days, 24-72h after last antibiotic
+   * ~88% prevention of recurrence (ECOSPOR III trial)
+
+AGENT DISCONTINUED (2025):
+- Bezlotoxumab (Zinplava): WITHDRAWN from market by manufacturer in 2025
+  * Was a monoclonal antibody against C. difficile toxin B; single IV infusion during antibiotic treatment
+  * Remove from formularies and clinical pathways immediately
+  * Rebyota and Vowst are now the primary recurrence-prevention options for high-risk patients
+
+CDI STEWARDSHIP METRICS:
+- Hospital-onset CDI: < 6.3 per 10,000 patient-days (NHSN benchmark)
+- Target zero inappropriate metronidazole for non-fulminant CDI
+- Time to appropriate oral therapy: < 24 hours from diagnosis
+""",
+    },
 ]
 
 

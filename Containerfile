@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ ./src/
 COPY vault/ ./vault/
+COPY scripts/ ./scripts/
 COPY README.md .
 
 # Placeholder dirs — production paths are volume-mounted over these
