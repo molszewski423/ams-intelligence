@@ -12,6 +12,63 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 
 ---
 
+## Kubernetes Deployment (Production)
+
+Deployed on a two-node **k3s cluster** in the `ai` namespace.
+
+| Node | Role | IP (Tailscale) |
+|---|---|---|
+| **mikepc** | Control plane + GPU (RTX 5060 Ti) | 100.97.45.57 |
+| **archbox** | Worker | 100.96.122.27 |
+
+```bash
+kubectl apply -f k8s/ams-intelligence.yaml
+# Dashboard: http://ams.lan  (add 192.168.4.54 ams.lan to /etc/hosts)
+```
+
+### Secrets
+
+```bash
+# Registry pull secret (shared with other ai-namespace workloads)
+kubectl create secret docker-registry gitlab-registry -n ai \
+  --docker-server=registry.gitlab.com \
+  --docker-username=<gitlab-user> \
+  --docker-password=<pat-read-registry>
+
+# Auth (streamlit-authenticator secrets.toml)
+kubectl create secret generic ams-intelligence-secrets -n ai \
+  --from-file=secrets.toml=/path/to/secrets.toml
+```
+
+### Vault ingestion
+
+`scripts/` is baked into the image (`COPY scripts/ ./scripts/` in Containerfile):
+
+```bash
+# Guidelines only (fast, ~2 min)
+kubectl exec -n ai deployment/ams-intelligence -- \
+  python3 /app/scripts/ingest_vault.py --guidelines-only
+
+# Full ingest including PubMed literature (slow, ~15 min)
+kubectl exec -n ai deployment/ams-intelligence -- \
+  python3 /app/scripts/ingest_vault.py
+```
+
+### CI/CD
+
+Every push to `master` triggers GitLab CI (`.gitlab-ci.yml`):
+1. `lint` — ruff check
+2. `build` — builds and pushes `registry.gitlab.com/molszewski423/ams-intelligence:latest`
+
+Rollout: `kubectl rollout restart deployment/ams-intelligence -n ai`
+
+### Ollama (shared in-cluster)
+
+`OLLAMA_BASE_URL=http://ollama:11434` — served by the Ollama pod on mikepc (RTX 5060 Ti).
+Models: `gemma4:26b` (REASON\_MODEL), `qwen3:30b` (CODE\_MODEL), `nomic-embed-text` (EMBED\_MODEL).
+
+---
+
 ## The Problem This Solves
 
 Antimicrobial stewardship programs face a daily data problem: resistance surveillance feeds from NHSN and WHONET, adverse event signals from FAERS, utilization trends, literature updates, and institutional formulary decisions  -  often managed manually across spreadsheets and disparate portals. Commercial platforms are expensive, cloud-dependent, and rarely designed by stewardship clinicians.
@@ -70,9 +127,10 @@ gateway/
 | **Surveillance APIs** | OpenFDA FAERS · CDC NHSN · PubMed Entrez | Standard APIs; FAERS uses quarterly partitioning to bypass 5000-result cap |
 | **PDF Generation** | fpdf2 | Formatted resistance trend reports and stewardship summaries |
 | **Auth** | streamlit-authenticator + bcrypt | Role-based access for clinical teams |
-| **Container** | Podman / Docker (Containerfile) | Rootless Podman on homelab; Docker-compatible |
-| **CI/CD** | GitLab CI | lint (ruff) + container build on every push to main |
-| **Hardware** | RTX 5060 Ti · 16GB VRAM · 32GB RAM | All LLM inference local; no cloud dependency for core function |
+| **Container** | Podman / Docker (Containerfile) | Rootless Podman build; pushed to `registry.gitlab.com` |
+| **Orchestration** | k3s (Kubernetes) | Two-node cluster; Traefik ingress; `ai` namespace |
+| **CI/CD** | GitLab CI | lint (ruff) + container build + push on every push to `master` |
+| **Hardware** | RTX 5060 Ti · 16GB VRAM · 32GB RAM | All LLM inference local via shared Ollama k3s pod |
 
 ---
 
@@ -179,41 +237,43 @@ The platform never makes final clinical or formulary determinations. `is_draft` 
 
 ## Quick Start
 
-### Local
+### Production (k3s)
+
+```bash
+kubectl apply -f k8s/ams-intelligence.yaml
+# Access: http://ams.lan  (login: username=mike)
+```
+
+### Local Development
 
 ```bash
 git clone https://gitlab.com/molszewski423/ams-intelligence.git
 cd ams-intelligence
 
-python3 -m venv .venv && source .venv/bin/activate
+python3.11 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-# Edit secrets.toml  -  add credentials and cookie key
+# Create .streamlit/secrets.toml with [credentials] and [cookie] sections
+mkdir -p .streamlit
 
-bash scripts/start.sh
-# Dashboard available at http://localhost:8502
+# Ingest guidelines
+PYTHONPATH=src python scripts/ingest_vault.py --guidelines-only
+
+# Launch
+PYTHONPATH=src streamlit run src/dashboard/app.py --server.port 8502
+# Dashboard at http://localhost:8502
 ```
 
-### Container (Podman/Docker)
+### Vault Ingestion (k3s)
 
 ```bash
-podman build -f Containerfile -t ams-intelligence:latest .
-podman run -d \
-  -p 8502:8502 \
-  -v ./vault:/app/vault:Z \
-  -v ./.streamlit/secrets.toml:/app/.streamlit/secrets.toml:Z \
-  ams-intelligence:latest
-```
+# Scripts are baked into the container image
+kubectl exec -n ai deployment/ams-intelligence -- \
+  python3 /app/scripts/ingest_vault.py --guidelines-only
 
-### Vault Ingestion
-
-```bash
-# Place markdown files in vault/
-python scripts/ingest_vault.py
-
-# Query via the dashboard Files page
-# or directly: PYTHONPATH=src python -c "from shared.vault_ingestor import query_vault; print(query_vault('carbapenem resistance'))"
+# Verify vault contents
+kubectl exec -n ai deployment/ams-intelligence -- python3 -c \
+  "from shared.vault_ingestor import vault_stats; import json; print(json.dumps(vault_stats(), indent=2))"
 ```
 
 ### Report Generation
@@ -278,10 +338,16 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 ### Infrastructure
 
-- **OS**: Debian 13, Linux 6.12
-- **GPU**: RTX 5060 Ti 16GB VRAM  -  inference
-- **RAM**: 32GB  -  Ollama layer offloading for large models
-- **Python**: 3.11 (venv)  -  chromadb wheels not available for 3.13
+| Component | Detail |
+|---|---|
+| **Cluster** | k3s v1.35; mikepc (control plane) + archbox (worker) |
+| **Namespace** | `ai` — all AI workloads |
+| **Ingress** | Traefik (k3s built-in); `ams.lan` → ams-intelligence:8502 |
+| **Registry** | `registry.gitlab.com/molszewski423/ams-intelligence:latest` |
+| **GPU** | RTX 5060 Ti 16 GB on mikepc; Ollama pod with RuntimeClass `nvidia` |
+| **Storage** | k3s local-path PVCs: `ams-chroma` (2 Gi), `ams-output` (5 Gi), `ams-data` (5 Gi) |
+| **OS** | Debian 13 (Trixie), Linux 6.12 |
+| **Python** | 3.11 in container |
 
 ---
 
