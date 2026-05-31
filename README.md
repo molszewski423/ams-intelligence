@@ -14,12 +14,48 @@ A production-grade clinical AI platform that pairs 20 years of critical care and
 
 ## Kubernetes Deployment (Production)
 
-Deployed on a two-node **k3s cluster** in the `ai` namespace.
+Deployed on a three-node **k3s cluster** in the `ai` namespace.
 
-| Node | Role | IP (Tailscale) |
+| Node | Role | IP |
 |---|---|---|
-| **mikepc** | Control plane + GPU (RTX 5060 Ti) | 100.97.45.57 |
-| **archbox** | Worker | 100.96.122.27 |
+| **mikepc** | Control plane + GPU (RTX 5060 Ti) | 100.97.45.57 (Tailscale) |
+| **archbox** | Worker | 100.96.122.27 (Tailscale) |
+| **mikeinspiron** | Worker (LAN only) | 192.168.4.33 |
+
+```mermaid
+graph TB
+    subgraph k3s["k3s Cluster - 3 nodes"]
+        subgraph mikepc_node["mikepc - control plane + RTX 5060 Ti"]
+            subgraph ai_ns["namespace: ai"]
+                AMS["ams-intelligence\nStreamlit :8502"]
+                OLL["ollama :11434\ngemma4:26b / qwen3:30b\nnomic-embed-text"]
+                PV["pv-workbench :8501"]
+            end
+            TFK["Traefik ingress"]
+        end
+        subgraph archbox_node["archbox - worker"]
+            subgraph ag_ns["namespace: agency"]
+                AG["24 agency services"]
+            end
+        end
+        subgraph mi_node["mikeinspiron - worker LAN"]
+        end
+    end
+
+    TFK -->|"ams.lan"| AMS
+    AMS -->|"http://ollama:11434"| OLL
+    AMS --> CHROMA[("PVC: ams-chroma\nChromaDB 2 Gi")]
+    VAULT["Obsidian Vault\nGuidelines + Formulary"] -->|"ingest_vault.py"| CHROMA
+    CHROMA --> AMS
+
+    CI["GitLab CI\nlint + build + push"] -->|"registry.gitlab.com\n:latest"| AMS
+
+    FAERS["OpenFDA FAERS"] --> AMS
+    NHSN["CDC NHSN"] --> AMS
+    PUBMED["PubMed Entrez"] --> AMS
+    WHONET["WHONET"] --> AMS
+    ATLAS["Pfizer ATLAS"] --> AMS
+```
 
 ```bash
 kubectl apply -f k8s/ams-intelligence.yaml
@@ -340,7 +376,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 | Component | Detail |
 |---|---|
-| **Cluster** | k3s v1.35; mikepc (control plane) + archbox (worker) |
+| **Cluster** | k3s v1.35; mikepc (control plane) + archbox + mikeinspiron (workers) |
 | **Namespace** | `ai` - all AI workloads |
 | **Ingress** | Traefik (k3s built-in); `ams.lan` → ams-intelligence:8502 |
 | **Registry** | `registry.gitlab.com/molszewski423/ams-intelligence:latest` |
