@@ -18,8 +18,8 @@ Deployed on a three-node **k3s cluster** in the `ai` namespace.
 
 | Node | Role | IP |
 |---|---|---|
-| **mikepc** | Control plane + GPU (RTX 5060 Ti) | 100.97.45.57 (Tailscale) |
-| **archbox** | Worker | 100.96.122.27 (Tailscale) |
+| **mikepc** | Control plane + GPU (RTX 5060 Ti) | Tailscale |
+| **archbox** | Worker | Tailscale |
 | **mikeinspiron** | Worker (LAN only) | 192.168.4.33 |
 
 ```mermaid
