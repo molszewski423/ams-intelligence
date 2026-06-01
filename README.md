@@ -382,6 +382,10 @@ ChromaDB with `nomic-embed-text` embeddings:
 | **GPU** | RTX 5060 Ti 16 GB on mikepc; Ollama pod with RuntimeClass `nvidia` |
 | **Storage** | k3s local-path PVCs: `ams-chroma` (2 Gi), `ams-output` (5 Gi), `ams-data` (5 Gi) |
 | **OS** | Debian 13 (Trixie), Linux 6.12 |
+| **Firewall** | nftables default-deny inbound on all nodes — `homelab-firewall.service` |
+| **IDS/IPS** | CrowdSec + firewall bouncer, 28k+ community-blocked IPs |
+| **DNS** | AdGuard Home — DoH/DoT upstreams, no plaintext DNS |
+| **Ingress** | Cloudflare Tunnel — no open inbound ports on any machine |
 | **Python** | 3.11 in container |
 
 ---
