@@ -2,7 +2,7 @@
 
 **Local-LLM antimicrobial stewardship platform · Program-agnostic · Clinician-built**
 
-A production-grade clinical AI platform that pairs 20 years of critical care and infectious disease expertise with signal detection algorithms and RAG-powered guideline retrieval. Built by the pharmacist who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation  -  every AI output is reviewed by the clinician before any patient care or reporting use.
+A production-grade clinical AI platform that pairs two decades of critical care and infectious disease expertise with signal detection algorithms and RAG-powered guideline retrieval. Built by the pharmacist who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation  -  every AI output is reviewed by the clinician before any patient care or reporting use.
 
 ---
 
@@ -262,8 +262,7 @@ Notes use frontmatter `tags` and `source` fields. The ingester strips `[[wikilin
 ```
 AI Output ──► is_draft=True ──► reviewer_flag=True ──► Stewardship Pharmacist Sign-off
                                                               │
-                                                    PharmD · BCPS · BCCCP
-                                                    20 years critical care / ID / AMS
+                                                    clinical pharmacist · two decades critical care / ID / AMS
                                                     IDSA AMS Center of Excellence
 ```
 
@@ -392,7 +391,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   Human Supervision                         │
-│           PharmD · BCPS · BCCCP · 20 years                 │
+│        clinical pharmacist · two decades clinical care       │
 │  Critical care · Infectious disease · AMS · IDSA CoE        │
 └────────────┬──────────────┬──────────────────┬─────────────┘
              │              │                  │
@@ -421,7 +420,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 ## About
 
-Built by a PharmD, BCPS, BCCCP with 20 years of critical care and infectious disease experience who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation. The statistical methods aren't bolted on  -  they're the same disproportionality algorithms used in pharmacovigilance, applied to stewardship data by someone who understands both sides.
+Built by a PharmD, BCPS, BCCCP with two decades of critical care and infectious disease experience who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation. The statistical methods aren't bolted on  -  they're the same disproportionality algorithms used in pharmacovigilance, applied to stewardship data by someone who understands both sides.
 
 **Stack philosophy:** Local-first. No cloud dependencies for core function. Data stays on-machine. The LLM reasoning layer runs on consumer hardware (RTX 5060 Ti 16GB) and is explicitly designed around the clinical realities of stewardship  -  confounding by indication, last-resort antibiotic populations, and the difference between a statistical signal and a clinical finding.
 
