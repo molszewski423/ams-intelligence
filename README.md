@@ -22,7 +22,7 @@ Deployed on a three-node **k3s cluster** in the `ai` namespace.
 | **archbox** | Worker | Tailscale |
 | **mikeinspiron** | Worker (LAN only) | LAN |
 
-![Architecture](docs/architecture.png)
+![Architecture](docs/cluster-architecture.png)
 
 ```bash
 kubectl apply -f ~/homelab-infra/k8s/ams-intelligence.yaml
