@@ -20,7 +20,8 @@ Deployed on a three-node **k3s cluster** in the `ai` namespace.
 |---|---|---|
 | **mikepc** | Control plane + GPU (RTX 5060 Ti) | Tailscale |
 | **debianbox** | Worker (was archbox/Arch until 2026-07-26 rebuild to Debian 13) | Tailscale |
-| **centosbook** | Worker (was mikeinspiron, reimaged to CentOS Stream 10 2026-07-25) | LAN |
+
+The former third worker, centosbook, was removed on 2026-10-04 (the laptop is now an openSUSE dev box for LocumView).
 
 ![Architecture](docs/cluster-architecture.png)
 
@@ -346,7 +347,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 | Component | Detail |
 |---|---|
-| **Cluster** | k3s v1.36; mikepc (control plane) + debianbox + centosbook (workers) |
+| **Cluster** | k3s v1.36; mikepc (control plane) + debianbox (worker) |
 | **Namespace** | `ai` - all AI workloads |
 | **Ingress** | Traefik (k3s built-in); `ams.lan` → ams-intelligence:8502 |
 | **Registry** | `registry.gitlab.com/molszewski423/ams-intelligence:latest` |
