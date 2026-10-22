@@ -29,7 +29,7 @@ DARK      = (26, 26, 46)
 def s(text: str) -> str:
     return (
         str(text)
-        .replace("—", "-").replace("–", "-")
+        .replace("\u2014", "-").replace("\u2013", "-")
         .replace("‘", "'").replace("’", "'")
         .replace("“", '"').replace("”", '"')
         .replace("•", "-").replace("·", "-")
@@ -138,7 +138,7 @@ class ProjectPDF(FPDF):
         self.set_y(y0 + 20)
 
     def two_col(self, left_items: list[str], right_items: list[str], title_l="", title_r=""):
-        """Render two logical groups sequentially — avoids page-break positioning bugs."""
+        """Render two logical groups sequentially; avoids page-break positioning bugs."""
         if title_l:
             self.ln(2)
             self.set_x(14)
@@ -201,7 +201,7 @@ class ProjectPDF(FPDF):
         y0 = self.get_y()
         self.set_draw_color(*color)
         self.set_line_width(1.2)
-        self.line(14, y0, 14, y0 + 2)   # placeholder — draw after knowing height
+        self.line(14, y0, 14, y0 + 2)   # placeholder: draw after knowing height
         self.set_line_width(0.2)
         self.set_draw_color(0, 0, 0)
         self.set_xy(18, y0 + 1)
@@ -251,17 +251,18 @@ def build():
     # ── Executive summary ─────────────────────────────────────────────────────
     pdf.section_header("01", "Project Overview")
     pdf.body(
-        "The Clinical Intelligence Portal is a locally-deployed, privacy-preserving AI research platform "
-        "purpose-built for clinical pharmacists and antimicrobial stewardship teams. It integrates two "
+        "The Clinical Intelligence Portal is a locally hosted, independent AI research prototype "
+        "for clinical pharmacists and antimicrobial stewardship questions. It integrates two "
         "specialized workbenches - the PV AI Workbench for pharmacovigilance signal intelligence and the "
         "AMS Intelligence pipeline for antimicrobial stewardship research - into a unified, authenticated gateway. "
-        "All AI inference runs entirely on-premises using locally-hosted large language models via Ollama, "
-        "ensuring patient data never leaves the institution."
+        "All AI inference runs locally using large language models via Ollama. It is developed on the "
+        "author's own resources, uses public surveillance data and synthetic examples only, is not affiliated "
+        "with or endorsed by any institution, and is not used in patient care."
     )
 
     pdf.callout(
-        "Design philosophy: institution-scale AI pharmacovigilance and stewardship without cloud dependency, "
-        "subscription fees, or PHI exposure. Every analysis, summary, and report is generated locally.",
+        "Design philosophy: AI pharmacovigilance and stewardship analysis without cloud dependency or "
+        "subscription fees, on public and synthetic data only. Every analysis, summary, and report is generated locally.",
         color=BLUE, bg=BLUE_LT
     )
 
@@ -269,7 +270,7 @@ def build():
         ("Research modules", "8+", BLUE),
         ("Data sources integrated", "6", GREEN),
         ("LLM parameters on-device", "26B+", AMBER),
-        ("Patient data leaves server", "Zero", GREEN),
+        ("Patient data used", "None", GREEN),
     ])
 
     # ── Platform components ───────────────────────────────────────────────────
@@ -346,8 +347,8 @@ def build():
     ], header=("Data Source", "Description & Integration Method"))
 
     pdf.callout(
-        "All file-based sources (NHSN, WHONET, ATLAS) use intelligent demo data fallback when real institutional "
-        "data files are absent, allowing full functionality out-of-the-box without data export workflows.",
+        "File-based sources (NHSN, WHONET, ATLAS) run on public extracts or invented demo data; no real "
+        "institutional or patient data is used, and every feature works out of the box on the demo data.",
         color=GREEN, bg=GREEN_LT
     )
 
@@ -472,21 +473,21 @@ def build():
         ],
         right_items=[
             "P&T committee reporting: automated plain-language summaries with data citations",
-            "Pharmacist education: real signal cases with PRR/ROR context for stewardship training",
+            "Pharmacist education: public FAERS signal examples with PRR/ROR context for stewardship training",
             "Research hypothesis generation: identify novel drug-outcome associations for further study",
             "Drug shortage planning: identify therapeutic alternatives with comparable safety profiles",
             "NHSN AUR module benchmarking: compare DOT against national comparators with statistical flagging",
-            "Regulatory submission support: structured signal narrative with temporal analysis for safety reports",
+            "Signal narrative drafting: structured summaries with temporal analysis (research use, not for regulatory submission)",
         ],
-        title_l="AMS & Formulary Applications",
-        title_r="Institutional & Research Applications",
+        title_l="Potential AMS & Formulary Applications",
+        title_r="Potential Research & Committee Applications",
     )
 
     pdf.callout(
-        "This platform was developed to bridge the gap between high-volume FAERS data and actionable "
-        "antimicrobial stewardship decisions. As a critical care pharmacist with BCPS and BCCCP "
-        "certifications, I designed each module to reflect real-world AMS workflows - from prospective "
-        "audit cycles to P&T committee reporting - with clinical rigor as the first priority.",
+        "This independent research prototype explores how high-volume public FAERS data could inform "
+        "antimicrobial stewardship questions. As a critical care pharmacist with BCPS and BCCCP "
+        "certifications, I modeled each module on published AMS workflows (prospective audit and feedback, "
+        "P&T committee reporting), using public and synthetic data only; it is not used in patient care.",
         color=BLUE, bg=BLUE_LT
     )
 
@@ -499,7 +500,7 @@ def build():
         ("Data Science",       "Statistical signal detection (PRR/ROR), temporal analysis, anomaly detection, Python/pandas/numpy"),
         ("Software Dev",       "Full-stack Streamlit applications, REST API clients, PDF generation, ChromaDB vector database"),
         ("Data Integration",   "Multi-source API orchestration (FDA/NCBI/NHSN), file-based ETL with intelligent fallback"),
-        ("Privacy & Security", "On-premises AI deployment, bcrypt authentication, zero PHI cloud exposure architecture"),
+        ("Privacy & Security", "Local AI deployment, bcrypt authentication; no PHI or patient data is processed"),
         ("Visualization",      "matplotlib chart embedding in PDFs, Streamlit interactive dashboards, data tables"),
         ("DevOps",             "Process management, Cloudflare tunneling, multi-service orchestration on single GPU server"),
     ])
