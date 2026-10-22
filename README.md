@@ -2,7 +2,7 @@
 
 **Local-LLM antimicrobial stewardship platform · Program-agnostic · Clinician-built**
 
-A production-grade clinical AI platform that pairs two decades of critical care and infectious disease expertise with signal detection algorithms and RAG-powered guideline retrieval. Built by the pharmacist who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation  -  every AI output is reviewed by the clinician before any patient care or reporting use.
+A local-first clinical AI research prototype that pairs signal detection algorithms with RAG-powered guideline retrieval, built by a clinical pharmacist with two decades of critical care and infectious disease experience. It runs on public surveillance data and synthetic examples only, is developed independently on the author's own resources, is not affiliated with or endorsed by any institution, and is not used in patient care. Every AI output is a draft for clinician review.
 
 ---
 
@@ -12,22 +12,32 @@ A production-grade clinical AI platform that pairs two decades of critical care 
 
 ---
 
-## Kubernetes Deployment (Production)
+## Kubernetes deployment (homelab)
 
-Deployed on a three-node **k3s cluster** in the `ai` namespace.
+Runs as a workload in the `ai` namespace of a two-node homelab **k3s cluster**. Status (2026-10-22): the deployment
+exists and is scaled to zero.
 
-| Node | Role | IP |
-|---|---|---|
-| **mikepc** | Control plane + GPU (RTX 5060 Ti) | Tailscale |
-| **debianbox** | Worker (was archbox/Arch until 2026-07-26 rebuild to Debian 13) | Tailscale |
+| Node | Role |
+|---|---|
+| **node1** | k3s agent with the GPU (RTX 5060 Ti 16 GB); Ollama runs here as a host service; the app is pinned here |
+| **node2** | k3s server (control plane, embedded etcd) |
 
-The former third worker, centosbook, was removed on 2026-10-04 (the laptop is now an openSUSE dev box for LocumView).
-
-![Architecture](docs/cluster-architecture.png)
+```mermaid
+flowchart LR
+  subgraph cluster["k3s cluster (namespace ai)"]
+    ingress["Traefik ingress"] --> app["ams-intelligence<br/>Streamlit :8502<br/>(node1)"]
+    app -->|"http://ollama:11434"| proxy["ollama-proxy pod"]
+    app --> pvc[("PVC ams-chroma<br/>ChromaDB 2 Gi")]
+  end
+  proxy --> ollama["Ollama on node1 (host service)<br/>gemma4:26b / qwen3:30b / nomic-embed-text"]
+  registry["registry.gitlab.com<br/>:latest"] --> app
+  sources["OpenFDA FAERS · CDC NHSN · PubMed Entrez · WHONET · Pfizer ATLAS"] --> app
+  vault["Obsidian vault<br/>guidelines"] -->|"ingest_vault.py"| pvc
+```
 
 ```bash
-kubectl apply -f ~/homelab-infra/k8s/ams-intelligence.yaml
-# Dashboard: http://ams.lan  (add 192.168.4.54 ams.lan to /etc/hosts)
+kubectl apply -f <infra-repo>/k8s/ams-intelligence.yaml
+# Dashboard: http://<ams-host>  (the Ingress host name; resolve it to a cluster node in your DNS or /etc/hosts)
 ```
 
 ### Secrets
@@ -66,13 +76,13 @@ Every push to `master` triggers GitLab CI (`.gitlab-ci.yml`):
 
 Rollout: `kubectl rollout restart deployment/ams-intelligence -n ai`
 
-**Local mirror:** Repository is mirrored to Gitea at `http://git.lan` (k3s `infra` namespace, pinned to mikepc) — clone/pull works LAN-only without GitLab access.
+**Repository:** the primary is a self-hosted Gitea instance, push-mirrored to GitHub and GitLab.
 
-**Manifests (IaC):** k8s Deployment, Service, PVCs, and Ingress rules live in `~/homelab-infra/k8s/ams-intelligence.yaml` on mikepc. This is the authoritative infrastructure-as-code definition for this deployment.
+**Manifests (IaC):** k8s Deployment, Service, PVCs, and Ingress rules live in `k8s/ams-intelligence.yaml` in the private infrastructure repository. That file is the authoritative infrastructure-as-code definition for this deployment.
 
 ### Ollama (shared in-cluster)
 
-`OLLAMA_BASE_URL=http://ollama:11434` - served by the Ollama pod on mikepc (RTX 5060 Ti).
+`OLLAMA_BASE_URL=http://ollama:11434` - the `ollama` Service, an `ollama-proxy` pod in front of Ollama, which runs as a host service on node1 (RTX 5060 Ti).
 Models: `gemma4:26b` (REASON\_MODEL), `qwen3:30b` (CODE\_MODEL), `nomic-embed-text` (EMBED\_MODEL).
 
 ---
@@ -84,9 +94,9 @@ Antimicrobial stewardship programs face a daily data problem: resistance surveil
 This platform brings the full AMS analytical workflow local, private, and clinician-controlled:
 - Aggregate five surveillance databases into a unified signal detection pipeline
 - Apply the same disproportionality methods used in pharmacovigilance (PRR/ROR) to antibiotic utilization data
-- RAG over institutional guidelines, formulary docs, and stewardship policies via an Obsidian-compatible vault
+- RAG over published guidelines and example formulary and stewardship documents via an Obsidian-compatible vault
 - Generate PDF trend reports and LinkedIn-ready stewardship highlights
-- All inference runs locally  -  no patient data leaves the machine
+- All inference runs locally; the project uses no patient data
 
 ---
 
@@ -183,7 +193,7 @@ Confounding by indication is the central challenge in AMS signal detection. Last
 |---|---|---|---|
 | 1 | **Resistance Trends** | Tracks AMR patterns over time across organisms and drug classes from NHSN, WHONET, ATLAS | Trend charts, resistance rate tables |
 | 2 | **Utilization Signals** | PRR/ROR disproportionality analysis on FAERS + NHSN utilization data | Signal table + LLM clinical interpretation |
-| 3 | **Vault Browser** | Natural language querying of ingested clinical guidelines and formulary docs via RAG | Cited answers from institutional knowledge base |
+| 3 | **Vault Browser** | Natural language querying of ingested clinical guidelines and formulary docs via RAG | Cited answers from the guideline knowledge base |
 
 ---
 
@@ -222,7 +232,7 @@ The RAG pipeline indexes structured markdown notes (Obsidian vault) covering AMS
 
 **Resistance**
 - Resistance mechanism summaries by organism
-- Local antibiogram interpretation notes
+- Antibiogram interpretation principles (CLSI M39), with invented example data
 - Empiric therapy guidance by infection type
 
 Notes use frontmatter `tags` and `source` fields. The ingester strips `[[wikilinks]]`, chunks by header hierarchy, and upserts idempotently using SHA-256 chunk IDs.
@@ -234,8 +244,7 @@ Notes use frontmatter `tags` and `source` fields. The ingester strips `[[wikilin
 ```
 AI Output ──► is_draft=True ──► reviewer_flag=True ──► Stewardship Pharmacist Sign-off
                                                               │
-                                                    clinical pharmacist · two decades critical care / ID / AMS
-                                                    IDSA AMS Center of Excellence
+                                                    clinical pharmacist reviewer
 ```
 
 The platform never makes final clinical or formulary determinations. `is_draft` cannot be set to `False` by any module function  -  it is a design invariant, not a configuration option. Signal outputs inform stewardship decision-making; they do not replace it.
@@ -244,11 +253,11 @@ The platform never makes final clinical or formulary determinations. `is_draft` 
 
 ## Quick Start
 
-### Production (k3s)
+### Homelab (k3s)
 
 ```bash
-kubectl apply -f ~/homelab-infra/k8s/ams-intelligence.yaml
-# Access: http://ams.lan  (login: username=mike)
+kubectl apply -f <infra-repo>/k8s/ams-intelligence.yaml
+# Access: http://<ams-host>  (sign in with an account from secrets.toml)
 ```
 
 ### Local Development
@@ -347,17 +356,17 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 | Component | Detail |
 |---|---|
-| **Cluster** | k3s v1.36; mikepc (control plane) + debianbox (worker) |
+| **Cluster** | k3s v1.36; node2 (server, control plane) + node1 (agent, GPU) |
 | **Namespace** | `ai` - all AI workloads |
-| **Ingress** | Traefik (k3s built-in); `ams.lan` → ams-intelligence:8502 |
+| **Ingress** | Traefik (k3s built-in); `<ams-host>` → ams-intelligence:8502 |
 | **Registry** | `registry.gitlab.com/molszewski423/ams-intelligence:latest` |
-| **GPU** | RTX 5060 Ti 16 GB on mikepc; Ollama pod with RuntimeClass `nvidia` |
+| **GPU** | RTX 5060 Ti 16 GB on node1; Ollama as a host service there, reached through the `ollama-proxy` pod |
 | **Storage** | k3s local-path PVCs: `ams-chroma` (2 Gi), `ams-output` (5 Gi), `ams-data` (5 Gi) |
 | **OS** | Debian 13 (Trixie), Linux 6.12 |
-| **Firewall** | nftables default-deny inbound on all nodes — `homelab-firewall.service` |
+| **Firewall** | nftables default-deny inbound on all nodes (`homelab-firewall.service`) |
 | **IDS/IPS** | CrowdSec + firewall bouncer, 28k+ community-blocked IPs |
-| **DNS** | AdGuard Home — DoH/DoT upstreams, no plaintext DNS |
-| **Ingress** | Cloudflare Tunnel — no open inbound ports on any machine |
+| **DNS** | AdGuard Home with DoH/DoT upstreams, no plaintext DNS |
+| **Ingress** | Cloudflare Tunnel, no open inbound ports on any machine |
 | **Python** | 3.11 in container |
 
 ---
@@ -368,7 +377,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 ┌─────────────────────────────────────────────────────────────┐
 │                   Human Supervision                         │
 │        clinical pharmacist · two decades clinical care       │
-│  Critical care · Infectious disease · AMS · IDSA CoE        │
+│  Critical care · Infectious disease · AMS                   │
 └────────────┬──────────────┬──────────────────┬─────────────┘
              │              │                  │
     ┌────────▼─────┐ ┌──────▼──────┐  ┌───────▼────────┐
@@ -396,7 +405,7 @@ ChromaDB with `nomic-embed-text` embeddings:
 
 ## About
 
-Built by a PharmD, BCPS, BCCCP with two decades of critical care and infectious disease experience who led an organization to IDSA Antimicrobial Stewardship Center of Excellence designation. The statistical methods aren't bolted on  -  they're the same disproportionality algorithms used in pharmacovigilance, applied to stewardship data by someone who understands both sides.
+Built by a PharmD, BCPS, BCCCP with two decades of critical care and infectious disease experience, independently and on the author's own resources. It uses public surveillance data and synthetic examples only, has no institutional affiliation or endorsement, and is not used in patient care. The statistical methods aren't bolted on  -  they're the same disproportionality algorithms used in pharmacovigilance, applied to stewardship data by someone who understands both sides.
 
 **Stack philosophy:** Local-first. No cloud dependencies for core function. Data stays on-machine. The LLM reasoning layer runs on consumer hardware (RTX 5060 Ti 16GB) and is explicitly designed around the clinical realities of stewardship  -  confounding by indication, last-resort antibiotic populations, and the difference between a statistical signal and a clinical finding.
 

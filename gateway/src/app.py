@@ -179,29 +179,25 @@ st.markdown("---")
 st.markdown("### Data Sources")
 st.caption("Integrated surveillance, literature, and guideline sources powering both workbenches.")
 
-LOGO_DIR = Path(__file__).parent.parent / "assets" / "logos"
-
+# Sources are named in text only: no logos, and no affiliation with or endorsement by any of them is implied.
 SOURCES = [
-    ("fda.png",    "FDA / FAERS",    "Adverse event\nreporting (live API)"),
-    ("cdc.png",    "CDC / NHSN",     "Antimicrobial use\n& resistance data"),
-    ("who.png",    "WHO / WHONET",   "Global resistance\nsurveillance"),
-    ("ncbi.png",   "NCBI / PubMed",  "Live literature\nintegration"),
-    ("pfizer.png", "Pfizer / ATLAS", "MIC & susceptibility\ntrends"),
-    ("ashp.png",   "ASHP",           "AMS guidelines\n& stewardship"),
-    ("idsa.png",   "IDSA / SHEA",    "Clinical practice\nguidelines"),
-    ("ema.png",    "EMA",            "Signal surveillance\n(PV Workbench)"),
-    ("umc.png",    "WHO-UMC",        "VigiBase\npharmacovigilance"),
+    ("FDA / FAERS",    "Adverse event\nreporting (live API)"),
+    ("CDC / NHSN",     "Antimicrobial use\n& resistance data"),
+    ("WHO / WHONET",   "Global resistance\nsurveillance"),
+    ("NCBI / PubMed",  "Live literature\nintegration"),
+    ("Pfizer / ATLAS", "MIC & susceptibility\ntrends"),
+    ("ASHP",           "AMS guidelines\n& stewardship"),
+    ("IDSA / SHEA",    "Clinical practice\nguidelines"),
+    ("EMA",            "Signal surveillance\n(PV Workbench)"),
+    ("WHO-UMC",        "VigiBase\npharmacovigilance"),
 ]
 
-logo_cols = st.columns(len(SOURCES))
-for col, (fname, name, desc) in zip(logo_cols, SOURCES):
-    logo_path = LOGO_DIR / fname
+source_cols = st.columns(len(SOURCES))
+for col, (name, desc) in zip(source_cols, SOURCES):
     with col:
-        if logo_path.exists():
-            st.image(str(logo_path), use_container_width=True)
-        else:
-            st.markdown(f"**{name}**")
+        st.markdown(f"**{name}**")
         st.caption(desc)
+st.caption("Public data sources and published guidelines, named for attribution. No affiliation or endorsement is implied.")
 
 st.markdown("---")
 st.caption(
