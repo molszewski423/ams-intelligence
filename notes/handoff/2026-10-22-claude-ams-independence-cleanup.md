@@ -41,6 +41,23 @@ Merged into `master` on 2026-10-22 by Claude Code, with a signed merge commit (n
 owner's explicit, one-time authorization for this branch only; the owner-merges rule is otherwise unchanged.
 `master` had not moved since the branch point (6fc0d2a). The branch was then deleted on Gitea.
 
+## Follow-up: branch `claude/ams-cleanup-2` (owner-approved scope, unmerged)
+
+- Deleted `docs/cluster-architecture.png` (old host names, three-node cluster; unreferenced).
+- Deleted `gateway/assets/logos/`, and the now-failing `COPY assets/ ./assets/` line in `gateway/Containerfile`
+  (nothing in `gateway/src/` reads `assets/` since the text names replaced the logos); README tree updated.
+- `scripts/generate_linkedin_pdf.py` reworded by the README's rules: independent research prototype, public and
+  synthetic data only, not affiliated, not used in patient care, no real institutional data (lines 349 and 486 to
+  489, plus the overview, the design callout, the "patient data" KPI, the application lists and "zero PHI cloud
+  exposure"); "Regulatory submission support" became research-use signal narratives, matching the gateway caption.
+  Its em dash sanitizer now uses `\u2014`/`\u2013` escapes (same behavior, no literal em dash in the file).
+- CI: `.gitlab-ci.yml` left unchanged. Its `build` job runs Docker-in-Docker, logs in to the GitLab registry and
+  pushes `:<sha>` and `:latest` (the tag the k3s deployment pulls), so it is not lint-only. The README's CI section
+  now says no pipeline runs on `master` as configured. Switching the rules to `master` is the owner's decision.
+- Verified: `ruff check src/ gateway/src/ scripts/` passed; the PDF regenerated to a scratch path (5 pages) has no
+  CoE mention, no em dash, no "real-world", "PHI cloud" or "regulatory submission support"; the edited files have no
+  em dashes.
+
 ## Next step
 
-Owner decides the open items above.
+Owner reviews and merges `claude/ams-cleanup-2`; decides whether GitLab CI should run on `master`.

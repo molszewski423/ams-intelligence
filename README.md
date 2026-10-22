@@ -70,9 +70,12 @@ kubectl exec -n ai deployment/ams-intelligence -- \
 
 ### CI/CD
 
-Every push to `master` triggers GitLab CI (`.gitlab-ci.yml`):
-1. `lint` - ruff check
-2. `build` - builds and pushes `registry.gitlab.com/molszewski423/ams-intelligence:latest`
+`.gitlab-ci.yml` defines two jobs, but as configured they run only on merge requests or a branch named `main`, and
+this repository uses `master`, so **no pipeline currently runs on push** (2026-10-22). The jobs:
+1. `lint` - ruff check of `src/`
+2. `build` - builds the image and pushes `registry.gitlab.com/molszewski423/ams-intelligence:<sha>` and `:latest`
+
+Lint locally with `ruff check src/ gateway/src/ scripts/` (rules in `ruff.toml`).
 
 Rollout: `kubectl rollout restart deployment/ams-intelligence -n ai`
 
@@ -124,10 +127,9 @@ src/
     ├── pdf_exporter.py               # Report generation (fpdf2)
     └── vault_ingestor.py             # Markdown → ChromaDB pipeline
 gateway/
-├── src/
-│   ├── app.py                        # Authenticated portal entry point
-│   └── auth.py                       # bcrypt + session management
-└── assets/logos/                     # Regulatory agency logos
+└── src/
+    ├── app.py                        # Authenticated portal entry point
+    └── auth.py                       # bcrypt + session management
 ```
 
 ---
