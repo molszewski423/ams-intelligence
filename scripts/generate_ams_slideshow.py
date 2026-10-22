@@ -1,5 +1,5 @@
 """
-AMS Intelligence — PowerPoint Slideshow Generator
+AMS Intelligence: PowerPoint Slideshow Generator
 Produces a professional presentation for LinkedIn / portfolio use.
 Run: python3 scripts/generate_ams_slideshow.py
 Output: ~/Desktop/AMS_Intelligence_Presentation.pptx
@@ -131,7 +131,7 @@ def slide_title(prs):
     # Description
     add_text(sl,
              "Multi-source surveillance pipeline integrating FAERS, NHSN, WHONET, ATLAS,\n"
-             "PubMed, and ASHP/IDSA guidelines — powered by local LLM inference.",
+             "PubMed, and ASHP/IDSA guidelines, powered by local LLM inference.",
              0.8, 3.9, 11.5, 1.2, size=16, color=GREEN_LT)
 
     # Author block (bottom right)
@@ -152,7 +152,7 @@ def slide_problem(prs):
     add_text(sl, "The Antimicrobial Resistance Crisis", 0.4, 0.15, 12.5, 0.7,
              size=28, bold=True, color=WHITE)
 
-    # Left column — stats
+    # Left column: stats
     add_rect(sl, 0.4, 1.2, 3.7, 5.9, rgb(0xE8, 0xF5, 0xE9))
     add_text(sl, "By the Numbers", 0.6, 1.35, 3.3, 0.5,
              size=15, bold=True, color=GREEN)
@@ -168,14 +168,14 @@ def slide_problem(prs):
         add_text(sl, lbl, 0.6, y + 0.52, 3.3, 0.55, size=11, color=SLATE)
         y += 1.28
 
-    # Right column — challenges
+    # Right column: challenges
     add_rect(sl, 4.4, 1.2, 8.5, 5.9, rgb(0xF5, 0xF5, 0xF5))
     add_text(sl, "Why Stewardship Programs Struggle", 4.6, 1.35, 8.1, 0.5,
              size=15, bold=True, color=GREEN)
     challenges = [
         ("Fragmented data", "FAERS, NHSN, WHONET, and ATLAS data live in separate silos with no unified view."),
         ("Manual analysis", "Resistance trend review is time-intensive; quarterly reports lag behind real-world changes."),
-        ("Guideline overload", "ASHP, IDSA, SHEA, and Surviving Sepsis guidelines update frequently — hard to track at point of care."),
+        ("Guideline overload", "ASHP, IDSA, SHEA, and Surviving Sepsis guidelines update frequently and are hard to track at point of care."),
         ("No signal correlation", "Utilization spikes and adverse event signals are rarely cross-referenced in real time."),
         ("Report burden", "AMS committee presentations require hours of manual data aggregation and formatting."),
     ]
@@ -199,8 +199,8 @@ def slide_overview(prs):
 
     add_text(sl,
              "A locally-hosted, privacy-preserving research platform that unifies antimicrobial surveillance data, "
-             "applies statistical signal detection, and generates plain-language AMS committee summaries — "
-             "all without sending patient or institutional data to any external server.",
+             "applies statistical signal detection, and generates plain-language AMS committee summaries, "
+             "all on public and synthetic data, with nothing sent to any external server.",
              0.5, 1.15, 12.3, 1.0, size=14, color=SLATE)
 
     # Three pillars
@@ -213,7 +213,7 @@ def slide_overview(prs):
          "referencing ASHP/IDSA guidelines via RAG (ChromaDB + nomic-embed-text)."),
         ("Report", GREEN_DARK,
          "Automated PDF generation with embedded charts, signal tables, KPI dashboards, "
-         "and AMS committee-ready plain-language summaries — all on-device, no cloud required."),
+         "and AMS committee-ready plain-language summaries, all on-device, no cloud required."),
     ]
 
     x = 0.4
@@ -241,7 +241,7 @@ def slide_architecture(prs):
         ("Data Layer",       "FAERS live API  ·  NHSN DOT/1000 PD  ·  WHONET resistance CSV  ·  Pfizer ATLAS  ·  PubMed Entrez",  rgb(0xE3, 0xF2, 0xFD), rgb(0x15, 0x65, 0xC0)),
         ("Analytics Layer",  "PRR / ROR / chi-squared  ·  Temporal pre/post comparison  ·  Z-score anomaly detection  ·  AMS category mapping", rgb(0xE8, 0xF5, 0xE9), GREEN),
         ("Intelligence Layer","gemma4:26b (local, 256K ctx)  ·  ChromaDB vault (ASHP/IDSA/Surviving Sepsis)  ·  nomic-embed-text RAG  ·  think=False (stewardship-optimized)", rgb(0xFF, 0xF3, 0xE0), AMBER),
-        ("Presentation Layer","Streamlit dashboard (port 8502)  ·  fpdf2 PDF reports  ·  Command Center CLI  ·  Antibiogram upload & comparison", rgb(0xF3, 0xE5, 0xF5), rgb(0x6A, 0x1B, 0x9A)),
+        ("Presentation Layer","Streamlit dashboard (port 8502)  ·  fpdf2 PDF reports  ·  Command Center CLI  ·  Antibiogram benchmarking (planned)", rgb(0xF3, 0xE5, 0xF5), rgb(0x6A, 0x1B, 0x9A)),
     ]
 
     y = 1.2
@@ -257,7 +257,7 @@ def slide_architecture(prs):
     add_rect(sl, 0.4, 6.9, 12.5, 0.4, rgb(0xF5, 0xF5, 0xF5))
     add_text(sl,
              "Hardware: RTX 5060 Ti 16 GB VRAM  ·  32 GB RAM  ·  Ollama @ localhost:11434  "
-             "·  All inference fully on-device — zero data egress",
+             "·  All inference fully on-device, zero data egress",
              0.6, 6.95, 12.1, 0.3, size=10, color=SLATE)
 
     add_rect(sl, 0, 7.35, 13.33, 0.15, GREEN)
@@ -272,12 +272,12 @@ def slide_data_sources(prs):
              size=28, bold=True, color=WHITE)
 
     sources = [
-        ("FDA / FAERS", "Adverse event reporting — live API integration. Real-time PRR/ROR signal detection across 18M+ case reports.", rgb(0x01, 0x57, 0x9B)),
-        ("CDC / NHSN", "National Healthcare Safety Network — Days of Therapy (DOT) per 1,000 patient-days, segmented by drug class.", rgb(0x1B, 0x5E, 0x20)),
-        ("WHO / WHONET", "Global resistance surveillance — organism-level MIC data, percent resistant trend analysis.", rgb(0x00, 0x63, 0x8A)),
-        ("Pfizer / ATLAS", "MIC50/MIC90 susceptibility trend data — MIC creep detection, matched by antibiotic class.", rgb(0x00, 0x3C, 0x6E)),
-        ("NCBI / PubMed", "Live literature integration via Entrez API — 12 curated AMS query categories, auto-embedded into ChromaDB.", rgb(0x21, 0x4F, 0x78)),
-        ("ASHP / IDSA / SHEA", "Guideline RAG vault — Barlam 2016, Dellit 2007, CDC Core Elements, ASHP Statement, Surviving Sepsis 2021.", rgb(0x33, 0x69, 0x1E)),
+        ("FDA / FAERS", "Adverse event reporting: live API integration. Real-time PRR/ROR signal detection across 18M+ case reports.", rgb(0x01, 0x57, 0x9B)),
+        ("CDC / NHSN", "National Healthcare Safety Network: Days of Therapy (DOT) per 1,000 patient-days, segmented by drug class.", rgb(0x1B, 0x5E, 0x20)),
+        ("WHO / WHONET", "Global resistance surveillance: organism-level MIC data, percent resistant trend analysis.", rgb(0x00, 0x63, 0x8A)),
+        ("Pfizer / ATLAS", "MIC50/MIC90 susceptibility trend data: MIC creep detection, matched by antibiotic class.", rgb(0x00, 0x3C, 0x6E)),
+        ("NCBI / PubMed", "Live literature integration via Entrez API: 12 curated AMS query categories, auto-embedded into ChromaDB.", rgb(0x21, 0x4F, 0x78)),
+        ("ASHP / IDSA / SHEA", "Guideline RAG vault: Barlam 2016, Dellit 2007, CDC Core Elements, ASHP Statement, Surviving Sepsis 2021.", rgb(0x33, 0x69, 0x1E)),
     ]
 
     x, y = 0.35, 1.2
@@ -303,7 +303,7 @@ def slide_resistance(prs):
     add_text(sl, "Module: Resistance Trend Analysis", 0.4, 0.15, 12.5, 0.7,
              size=28, bold=True, color=WHITE)
 
-    # Left panel — how it works
+    # Left panel: how it works
     add_rect(sl, 0.4, 1.2, 5.8, 5.9, rgb(0xE8, 0xF5, 0xE9))
     add_text(sl, "How It Works", 0.6, 1.35, 5.4, 0.45, size=15, bold=True, color=GREEN)
     steps = [
@@ -320,7 +320,7 @@ def slide_resistance(prs):
         add_text(sl, body, 0.6, y + 0.32, 5.4, 0.5, size=10, color=SLATE)
         y += 0.93
 
-    # Right panel — outputs
+    # Right panel: outputs
     add_rect(sl, 6.5, 1.2, 6.4, 5.9, rgb(0xF5, 0xF5, 0xF5))
     add_text(sl, "Report Outputs", 6.7, 1.35, 6.0, 0.45, size=15, bold=True, color=GREEN)
     outputs = [
@@ -343,7 +343,7 @@ def slide_resistance(prs):
 
     # Example drug pair
     add_rect(sl, 0.4, 7.05, 12.5, 0.25, GREEN_LT)
-    add_text(sl, "Example: cefazolin vs. cefpodoxime — 18 Evans-positive signals detected, PRR peak 4.31 (C. difficile infection)",
+    add_text(sl, "Example: cefazolin vs. cefpodoxime: 18 Evans-positive signals detected, PRR peak 4.31 (C. difficile infection)",
              0.55, 7.07, 12.2, 0.22, size=9.5, color=GREEN_DARK)
 
     add_rect(sl, 0, 7.35, 13.33, 0.15, GREEN)
@@ -373,8 +373,8 @@ def slide_utilization(prs):
     add_rect(sl, 0.4, 2.35, 6.0, 4.75, rgb(0xE8, 0xF5, 0xE9))
     add_text(sl, "Detection Methods", 0.6, 2.5, 5.6, 0.45, size=14, bold=True, color=GREEN)
     methods = [
-        ("NHSN DOT/1000 PD trend", "Days of therapy per 1,000 patient-days — Z-score spike detection and sustained-high flagging."),
-        ("Benchmark comparison", "National reference benchmarks per drug class — deviation % calculated quarterly."),
+        ("NHSN DOT/1000 PD trend", "Days of therapy per 1,000 patient-days: Z-score spike detection and sustained-high flagging."),
+        ("Benchmark comparison", "National reference benchmarks per drug class: deviation % calculated quarterly."),
         ("FAERS cross-reference", "Concurrent adverse event signal detection for AMS-relevant reaction categories."),
         ("Anomaly scoring", "Composite score: spike severity × duration × signal correlation → critical / watch / routine."),
         ("Correlation flags", "Utilization spikes co-occurring with FAERS resistance signals trigger escalation alerts."),
@@ -420,10 +420,10 @@ def slide_vault_cmd(prs):
              size=15, bold=True, color=GREEN)
     vault_items = [
         ("Guideline corpus", "IDSA/SHEA 2016 (Barlam), IDSA/SHEA 2007 (Dellit), ASHP-IDSA-SIDP-SCCM 2019,\nCDC Core Elements, ASHP Statement 2010, Surviving Sepsis 2021, IDSA Resistance Guidelines"),
-        ("PubMed literature", "Live Entrez queries across 12 AMS topic categories (ICU stewardship, PK/PD,\nC. diff, resistance trends) — auto-chunked and embedded on ingestion"),
-        ("Embedding model", "nomic-embed-text via Ollama — 768-dim vectors, cosine similarity, ChromaDB persistence"),
-        ("Chunk strategy", "~512 tokens / chunk, 80-token overlap — balances retrieval precision with context coverage"),
-        ("Query interface", "Top-k semantic search with doc_type filter — returns text, source, and similarity score"),
+        ("PubMed literature", "Live Entrez queries across 12 AMS topic categories (ICU stewardship, PK/PD,\nC. diff, resistance trends), auto-chunked and embedded on ingestion"),
+        ("Embedding model", "nomic-embed-text via Ollama: 768-dim vectors, cosine similarity, ChromaDB persistence"),
+        ("Chunk strategy", "~512 tokens / chunk, 80-token overlap, balancing retrieval precision with context coverage"),
+        ("Query interface", "Top-k semantic search with doc_type filter; returns text, source, and similarity score"),
     ]
     y = 1.95
     for title, body in vault_items:
@@ -461,20 +461,20 @@ def slide_antibiogram(prs):
     sl = blank_slide(prs)
     fill_bg(sl, WHITE)
     add_rect(sl, 0, 0, 13.33, 1.0, GREEN)
-    add_text(sl, "Hospital Antibiogram Integration", 0.4, 0.15, 12.5, 0.7,
+    add_text(sl, "Antibiogram Benchmarking (Planned)", 0.4, 0.15, 12.5, 0.7,
              size=28, bold=True, color=WHITE)
 
     add_text(sl,
-             "AMS Intelligence accepts de-identified institutional antibiogram data for benchmarking against national surveillance sources.",
+             "Planned, not built: benchmarking an antibiogram against national surveillance sources, demonstrated with invented example data only.",
              0.5, 1.15, 12.3, 0.6, size=14, color=SLATE)
 
     features = [
-        ("CSV Upload", "Upload CSV exports from clinical microbiology systems (WHONET-compatible format supported). Patient-de-identified data only.", rgb(0x01, 0x57, 0x9B)),
-        ("Organism-Drug Matrix", "Interactive heatmap comparing institutional %S / %I / %R against WHONET global and ATLAS reference ranges.", GREEN),
-        ("Resistance Gap Alerts", "Flags organisms where institutional resistance exceeds national benchmarks by user-configurable threshold (default: +15%).", AMBER),
-        ("Temporal Tracking", "Year-over-year antibiogram comparison to identify emerging resistance trends within a single institution.", GREEN_DARK),
-        ("FAERS Correlation", "Cross-references institutional high-resistance organisms against FAERS adverse event signals for the same drug class.", rgb(0x6A, 0x1B, 0x9A)),
-        ("PDF Report", "Institution-specific resistance report with national benchmark overlay, suitable for P&T committee presentation.", SLATE),
+        ("CSV Upload", "CSV in a WHONET-compatible format. Demonstrated with invented example data; no real institutional or patient data.", rgb(0x01, 0x57, 0x9B)),
+        ("Organism-Drug Matrix", "Interactive heatmap comparing an example antibiogram's %S / %I / %R against WHONET global and ATLAS reference ranges.", GREEN),
+        ("Resistance Gap Alerts", "Flags organisms where the example antibiogram's resistance exceeds national benchmarks by a configurable threshold (default: +15%).", AMBER),
+        ("Temporal Tracking", "Year-over-year comparison of example antibiograms to show how emerging resistance trends would surface.", GREEN_DARK),
+        ("FAERS Correlation", "Cross-references high-resistance organisms in the example data against FAERS adverse event signals for the same drug class.", rgb(0x6A, 0x1B, 0x9A)),
+        ("PDF Report", "Resistance report with a national benchmark overlay, in a format a P&T committee could use.", SLATE),
     ]
 
     x, y = 0.4, 1.95
@@ -490,7 +490,7 @@ def slide_antibiogram(prs):
 
     add_rect(sl, 0.4, 7.0, 12.5, 0.3, rgb(0xFF, 0xF8, 0xE1))
     add_text(sl,
-             "Privacy: All uploaded data remains on-device. No institutional data transmitted to external servers.",
+             "Privacy: all computation on-device; demonstrated with invented example data only.",
              0.6, 7.04, 12.1, 0.25, size=10, color=AMBER)
 
     add_rect(sl, 0, 7.35, 13.33, 0.15, GREEN)
@@ -506,27 +506,27 @@ def slide_tech(prs):
 
     categories = [
         ("AI / LLM", GREEN, [
-            "gemma4:26b — reasoning, synthesis, key findings (256K context)",
-            "gemma4:e4b — fast drafting, plain-language summaries",
-            "nomic-embed-text — semantic embeddings (768-dim)",
-            "Ollama — local LLM serving (GPU: RTX 5060 Ti 16 GB)",
-            "LangChain LCEL — prompt chaining, ChatOllama integration",
-            "think=False — disables chain-of-thought for efficiency",
+            "gemma4:26b: reasoning, synthesis, key findings (256K context)",
+            "gemma4:e4b: fast drafting, plain-language summaries",
+            "nomic-embed-text: semantic embeddings (768-dim)",
+            "Ollama: local LLM serving (GPU: RTX 5060 Ti 16 GB)",
+            "LangChain LCEL: prompt chaining, ChatOllama integration",
+            "think=False: disables chain-of-thought for efficiency",
         ]),
         ("Data & Analytics", rgb(0x01, 0x57, 0x9B), [
-            "pandas / numpy — data manipulation and signal computation",
-            "scipy — chi-squared test, Z-score anomaly detection",
-            "matplotlib — embedded charts (PRR bars, trend lines, heatmaps)",
-            "ChromaDB — persistent vector store for RAG vault",
-            "requests — FAERS OpenFDA API, NCBI Entrez, Ollama HTTP",
-            "NCBI Bio.Entrez — PubMed structured XML retrieval",
+            "pandas / numpy: data manipulation and signal computation",
+            "scipy: chi-squared test, Z-score anomaly detection",
+            "matplotlib: embedded charts (PRR bars, trend lines, heatmaps)",
+            "ChromaDB: persistent vector store for RAG vault",
+            "requests: FAERS OpenFDA API, NCBI Entrez, Ollama HTTP",
+            "NCBI Bio.Entrez: PubMed structured XML retrieval",
         ]),
         ("Application", rgb(0x6A, 0x1B, 0x9A), [
-            "Streamlit — multi-page dashboard (port 8502)",
-            "streamlit-authenticator — bcrypt session management",
-            "fpdf2 — PDF report generation with embedded figures",
-            "Pillow — badge/logo image generation",
-            "Python 3.12 — async where needed",
+            "Streamlit: multi-page dashboard (port 8502)",
+            "streamlit-authenticator: bcrypt session management",
+            "fpdf2: PDF report generation with embedded figures",
+            "Pillow: badge/logo image generation",
+            "Python 3.12: async where needed",
             "Gateway dashboard (port 8500) linking PV + AMS workbenches",
         ]),
     ]
@@ -558,11 +558,11 @@ def slide_impact(prs):
              0.6, 1.45, 12.0, 0.5, size=16, color=GREEN_LT)
 
     impacts = [
-        ("Minutes, not hours", "Full resistance trend analysis — FAERS signals, WHONET resistance, ATLAS MIC trends, LLM interpretation, and PDF report — in under 3 minutes."),
+        ("Minutes, not hours", "Full resistance trend analysis (FAERS signals, WHONET resistance, ATLAS MIC trends, LLM interpretation, and PDF report) in under 3 minutes."),
         ("Evidence-based", "Every clinical interpretation cites ASHP/IDSA guidelines retrieved in real time from the local knowledge vault."),
         ("Committee-ready", "Plain-language AMS summaries generated by local LLM, formatted for P&T committee presentations without manual editing."),
-        ("Zero data risk", "All computation on-device. FAERS queries use de-identified public data. Institutional antibiograms never leave the local machine."),
-        ("Extensible", "New drug classes, data sources, and guideline documents added via CLI ingestion — no code changes required."),
+        ("Zero data risk", "All computation on-device. FAERS queries use de-identified public data. No real institutional or patient data is used."),
+        ("Extensible", "New drug classes, data sources, and guideline documents added via CLI ingestion; no code changes required."),
     ]
 
     y = 2.15
